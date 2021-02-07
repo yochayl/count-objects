@@ -9,9 +9,7 @@ const {
   intersectFilters,
 } = require("./functions");
 
-const getFilter = (filters) => {};
-
-class ObjectsCounter {
+class CountObjects {
   constructor(objectArr, options) {
     this.union = addArray({}, objectArr, {});
     this.options = { ...options };
@@ -41,7 +39,11 @@ class ObjectsCounter {
     this.filters = [...this.filters, filter];
     return this;
   }
+
+  getFilters() {
+    return [...this.filters];
+  }
 }
 module.exports = {
-  ObjectsCounter,
+  CountObjects,
 };

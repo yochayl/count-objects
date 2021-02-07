@@ -12,7 +12,7 @@ const {
   intersectFilters,
 } = require("../src/functions/index");
 const { delimiter, prettyDelimiter } = require("../src/constants");
-const { ObjectsCounter } = require("../src");
+const { CountObjects } = require("../src");
 
 describe("add", () => {
   it("returns union for empty obj", (done) => {
@@ -548,10 +548,10 @@ describe("intersectFilters", () => {
     return done();
   });
 });
-describe("ObjectsCounter", () => {
+describe("CountObjects", () => {
   describe("add", () => {
     it("adds a single object", (done) => {
-      const oc = new ObjectsCounter();
+      const oc = new CountObjects();
       oc.add({ key1: "value1" });
       const expectedResult = { key1: { value1: 1 } };
       const result = oc.count();
@@ -559,7 +559,7 @@ describe("ObjectsCounter", () => {
       return done();
     });
     it("adds an array of objects", (done) => {
-      const oc = new ObjectsCounter();
+      const oc = new CountObjects();
       oc.add([{ key1: "value1" }, { key1: "value1" }]);
       const expectedResult = { key1: { value1: 2 } };
       const result = oc.count();
@@ -569,7 +569,7 @@ describe("ObjectsCounter", () => {
   });
   describe("table", () => {
     it("generates a table", (done) => {
-      const oc = new ObjectsCounter([
+      const oc = new CountObjects([
         { key1: "value1" },
         { key1: "value1" },
         { key1: "value2" },
@@ -612,7 +612,7 @@ describe("ObjectsCounter", () => {
           },
         },
       ];
-      const oc = new ObjectsCounter(objects);
+      const oc = new CountObjects(objects);
       const filter = ["size", "length", "10"];
       oc.addFilter(filter);
       const expectedTable = [
@@ -636,6 +636,24 @@ describe("ObjectsCounter", () => {
       };
       expect(oc.table()).to.be.eql(expectedTable);
       expect(oc.count()).to.be.eql(expectedCount);
+      return done();
+    });
+  });
+
+  describe("getFilters", () => {
+    const co = new CountObjects();
+    it("returns an empty array when there is no filter", (done) => {
+      expect(co.getFilters()).to.be.eql([]);
+      expect(co.getFilters()).not.to.be.equals(co.filters);
+      return done();
+    });
+
+    it("returns the current filters array", (done) => {
+      co.add([{ a: { b: true } }, { a: { b: false } }]);
+      const filter = ["a", "b", true];
+      co.addFilter(filter);
+      expect(co.getFilters()).to.be.eql([filter]);
+      expect(co.getFilters()).not.to.be.equals(co.filters);
       return done();
     });
   });
