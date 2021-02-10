@@ -551,25 +551,25 @@ describe("intersectFilters", () => {
 describe("CountObjects", () => {
   describe("add", () => {
     it("adds a single object", (done) => {
-      const oc = new CountObjects();
-      oc.add({ key1: "value1" });
+      const co = new CountObjects();
+      co.add({ key1: "value1" });
       const expectedResult = { key1: { value1: 1 } };
-      const result = oc.count();
+      const result = co.count();
       expect(result).to.be.eql(expectedResult);
       return done();
     });
     it("adds an array of objects", (done) => {
-      const oc = new CountObjects();
-      oc.add([{ key1: "value1" }, { key1: "value1" }]);
+      const co = new CountObjects();
+      co.add([{ key1: "value1" }, { key1: "value1" }]);
       const expectedResult = { key1: { value1: 2 } };
-      const result = oc.count();
+      const result = co.count();
       expect(result).to.be.eql(expectedResult);
       return done();
     });
   });
   describe("table", () => {
     it("generates a table", (done) => {
-      const oc = new CountObjects([
+      const co = new CountObjects([
         { key1: "value1" },
         { key1: "value1" },
         { key1: "value2" },
@@ -578,7 +578,7 @@ describe("CountObjects", () => {
         { key: "key1", value: "value1", count: 2 },
         { key: "key1", value: "value2", count: 1 },
       ];
-      const table = oc.table();
+      const table = co.table();
       expect(table).to.be.eql(expectedResult);
       return done();
     });
@@ -612,9 +612,9 @@ describe("CountObjects", () => {
           },
         },
       ];
-      const oc = new CountObjects(objects);
+      const co = new CountObjects(objects);
       const filter = ["size", "length", "10"];
-      oc.addFilter(filter);
+      co.addFilter(filter);
       const expectedTable = [
         { key: "age", value: "100", count: 2 },
         { key: "color", value: "blue", count: 1 },
@@ -634,8 +634,8 @@ describe("CountObjects", () => {
           width: { 100: 1, 200: 0, 400: 1 },
         },
       };
-      expect(oc.table()).to.be.eql(expectedTable);
-      expect(oc.count()).to.be.eql(expectedCount);
+      expect(co.table()).to.be.eql(expectedTable);
+      expect(co.count()).to.be.eql(expectedCount);
       return done();
     });
   });
