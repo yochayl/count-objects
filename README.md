@@ -7,7 +7,7 @@ Counts unique objects for each key and value of an array of objects
 ### constructor
 
 ```javascript
-const { CountObjects } = require("./index");
+const { CountObjects } = require("count-objects");
 
 const objects = [
   {
