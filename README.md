@@ -2,6 +2,12 @@
 
 Counts unique objects for each key and value of an array of objects
 
+## install
+
+```javascript
+npm install count-objects
+```
+
 ## usage
 
 ### constructor
