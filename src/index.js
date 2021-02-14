@@ -1,8 +1,6 @@
 const { delimiter, uniqueKey, allObjects } = require("./constants");
 const {
-  flatCount,
   add,
-  getUniqueKeys,
   addArray,
   count,
   table,
@@ -11,7 +9,7 @@ const {
 
 class CountObjects {
   constructor(objectArr, options) {
-    this.union = addArray({}, objectArr, {});
+    this.union = addArray({}, objectArr, { ...options });
     this.options = { ...options };
     this.filters = [];
   }

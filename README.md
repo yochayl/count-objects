@@ -136,3 +136,43 @@ console.log(co.getFilters());
 //   [ 'fruit', 'olive', 'Arbequina' ]
 // ]
 ```
+
+### count unique values
+
+```javascript
+// instead of counting unique objects, we can count unique values.
+// in this example we count unique colors:
+
+const flowers = [
+  {
+    color: "black",
+    type: "Tulip",
+  },
+  {
+    color: "black",
+    type: "Tulip",
+  },
+  {
+    color: "white",
+    type: "Tulip",
+  },
+  {
+    type: "Tulip",
+  },
+];
+
+const uniqueColors = new CountObjects(flowers, { uniqueKey: "color" });
+console.table(uniqueColors.table());
+
+// ┌─────────┬────────┬─────────┬───────┐
+// │ (index) │  key   │  value  │ count │
+// ├─────────┼────────┼─────────┼───────┤
+// │    0    │ 'type' │ 'Tulip' │   2   │
+// └─────────┴────────┴─────────┴───────┘
+
+// a little about the unique key ('uniqueKey'):
+// 1. it needs to be at the base of the object (not nested)
+// 2. it is omitted from the count
+// 3. if it is missing, the values in the object are not counted
+// 4. it can only be set once, at the constructor
+```
