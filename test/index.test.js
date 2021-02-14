@@ -15,7 +15,7 @@ const { delimiter, prettyDelimiter } = require("../src/constants");
 const { CountObjects } = require("../src");
 
 describe("add", () => {
-  it("returns union for empty obj", (done) => {
+  it("returns union for empty object", (done) => {
     const union = { key: "value" };
     const result = add(union, {});
     expect(result).to.be.equals(union);
@@ -31,15 +31,13 @@ describe("add", () => {
     expect(result).to.be.eql(expectedUnion);
     return done();
   });
-  it("raises an error for missing id", (done) => {
+  it("returns union for missing unique key", (done) => {
     const id = "dummy";
-    try {
-      add({}, { a: "b" }, { uniqueKey: "id" });
-      throw new Error("no error");
-    } catch (error) {
-      expect(error.message).to.be.equals(`missing unique key`);
-      return done();
-    }
+    const union = add({}, { [id]: "1", a: "b" }, { uniqueKey: id });
+    const union2 = add(union, { a: "b" }, { uniqueKey: id });
+    console.log(union);
+    expect(union).to.be.equals(union2);
+    return done();
   });
 
   it("adds values with unique keys", (done) => {

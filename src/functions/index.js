@@ -34,7 +34,7 @@ const add = (union, obj, options = {}) => {
     obj[uniqueKey] = uuid();
   }
   if (obj[uniqueKey] === undefined) {
-    throw new Error(`missing unique key`);
+    return union;
   }
   const newUnion = { ...union };
   const flat = flatten(obj, { delimiter });

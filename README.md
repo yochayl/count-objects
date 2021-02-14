@@ -4,7 +4,7 @@ Counts unique objects for each key and value of an array of objects
 
 ## install
 
-```javascript
+```console
 npm install count-objects
 ```
 
