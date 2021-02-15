@@ -1,6 +1,6 @@
 {
   "name": "count-objects",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Counts unique objects for each key and value in an array of objects",
   "main": "src/index.js",
   "scripts": {
