@@ -137,15 +137,6 @@ console.log(co.getFilters());
 // ]
 ```
 
-### clone
-
-```javascript
-// creates a clone of the countObjects instance:
-const clone = co.clone();
-console.log(clone === co);
-// false
-```
-
 ### count unique values
 
 ```javascript
@@ -179,9 +170,32 @@ console.table(uniqueColors.table());
 // │    0    │ 'type' │ 'Tulip' │   2   │
 // └─────────┴────────┴─────────┴───────┘
 
-// a little about the unique key ('uniqueKey'):
+// about the unique key ('uniqueKey'):
 // 1. it needs to be at the base of the object (not nested)
 // 2. it is omitted from the count
 // 3. if it is missing, the values in the object are not counted
 // 4. it can only be set once, at the constructor
+```
+
+### clone
+
+```javascript
+// creates a clone of the countObjects instance:
+const clone = co.clone();
+console.log(clone === co);
+// false
+```
+
+### clearFilters
+
+```javascript
+// removes all filters
+```
+
+### removeFilter
+
+```javascript
+// removes a specific filter if exists:
+const filter = ["fruit", "orange", "Valencia"];
+co.removeFilter(filter);
 ```

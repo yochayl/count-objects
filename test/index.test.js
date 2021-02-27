@@ -637,4 +637,28 @@ describe("CountObjects", () => {
       return done();
     });
   });
+
+  describe("clearFilters", () => {
+    it("clears the filters", () => {
+      const co = new CountObjects();
+      const filter = ["a", "b", true];
+      co.addFilter(filter);
+      co.clearFilters();
+      expect(co.filters).to.be.eql([]);
+    });
+  });
+
+  describe("removeFilter", () => {
+    it("removes a filter if exists", () => {
+      const co = new CountObjects();
+      const filter1 = ["a", "b", true];
+      const filter2 = ["c", "d", false];
+      const filter3 = ["f", "f", true];
+      co.addFilter(filter1);
+      co.addFilter(filter2);
+      co.addFilter(filter3);
+      co.removeFilter(filter2);
+      expect(co.filters).to.be.eql([filter1, filter3]);
+    });
+  });
 });

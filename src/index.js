@@ -47,7 +47,20 @@ class CountObjects {
   }
 
   getFilters() {
-    return [...this.filters];
+    return JSON.parse(JSON.stringify(this.filters));
+  }
+
+  clearFilters() {
+    this.filters = [];
+    return this.clone(this);
+  }
+
+  removeFilter(filterToRemove) {
+    const filterToRemoveStr = JSON.stringify(filterToRemove);
+    this.filters = this.filters.filter((filter) => {
+      return JSON.stringify(filter) !== filterToRemoveStr;
+    });
+    return this.clone(this);
   }
 }
 module.exports = {
