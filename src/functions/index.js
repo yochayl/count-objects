@@ -153,15 +153,7 @@ const table = (union, options = {}) => {
   }
 
   // first sort by value then by key
-  return tableObj
-    .sort((a, b) => {
-      const test = a.value < b.value ? -1 : 1;
-      return a.value === b.value ? 0 : test;
-    })
-    .sort((a, b) => {
-      const test = a.key < b.key ? -1 : 1;
-      return a.key === b.key ? 0 : test;
-    });
+  return tableObj;
 };
 
 module.exports = {

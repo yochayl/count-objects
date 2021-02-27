@@ -425,44 +425,7 @@ describe("getUniqueKeys", () => {
 });
 
 describe("table", () => {
-  it("create table ordered by key", (done) => {
-    const obj1 = {
-      key: { A: 1 },
-    };
-    const obj2 = {
-      key: { B: 2 },
-    };
-    const union = addArray({}, [obj2, obj1]);
-
-    const expectedTable = [
-      { key: `key${prettyDelimiter}A`, value: "1", count: 1 },
-      { key: `key${prettyDelimiter}B`, value: "2", count: 1 },
-    ];
-    const result = table(union);
-    expect(result).to.be.eql(expectedTable);
-    return done();
-  });
-
-  it("create table ordered by value", (done) => {
-    const obj1 = {
-      key: { A: 2 },
-    };
-    const obj2 = {
-      key: { A: 1 },
-    };
-
-    const union = addArray({}, [obj1, obj2]);
-    const count = flatCount(union);
-    const expectedTable = [
-      { key: `key${prettyDelimiter}A`, value: "1", count: 1 },
-      { key: `key${prettyDelimiter}A`, value: "2", count: 1 },
-    ];
-    const result = table(union);
-    expect(result).to.be.eql(expectedTable);
-    return done();
-  });
-
-  it("create table ordered by kay and value", (done) => {
+  it("creates table", (done) => {
     const obj1 = {
       key: { A: 2 },
     };
@@ -477,7 +440,16 @@ describe("table", () => {
       { key: `key${prettyDelimiter}A`, value: "2", count: 2 },
       { key: `key${prettyDelimiter}B`, value: "1", count: 1 },
     ];
-    const result = table(union);
+    const result = table(union)
+      .sort((a, b) => {
+        const test = a.value < b.value ? -1 : 1;
+        return a.value === b.value ? 0 : test;
+      })
+      .sort((a, b) => {
+        const test = a.key < b.key ? -1 : 1;
+        return a.key === b.key ? 0 : test;
+      });
+
     expect(result).to.be.eql(expectedTable);
     return done();
   });
@@ -632,7 +604,17 @@ describe("CountObjects", () => {
           width: { 100: 1, 200: 0, 400: 1 },
         },
       };
-      expect(co.table()).to.be.eql(expectedTable);
+      const table = co
+        .table()
+        .sort((a, b) => {
+          const test = a.value < b.value ? -1 : 1;
+          return a.value === b.value ? 0 : test;
+        })
+        .sort((a, b) => {
+          const test = a.key < b.key ? -1 : 1;
+          return a.key === b.key ? 0 : test;
+        });
+      expect(table).to.be.eql(expectedTable);
       expect(co.count()).to.be.eql(expectedCount);
       return done();
     });
