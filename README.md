@@ -137,6 +137,15 @@ console.log(co.getFilters());
 // ]
 ```
 
+### clone
+
+```javascript
+// creates a clone of the countObjects instance:
+const clone = co.clone();
+console.log(clone === co);
+// false
+```
+
 ### count unique values
 
 ```javascript

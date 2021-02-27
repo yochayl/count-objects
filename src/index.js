@@ -14,11 +14,19 @@ class CountObjects {
     this.filters = [];
   }
 
+  clone() {
+    const clone = new CountObjects([]);
+    clone.union = { ...this.union };
+    clone.options = { ...this.options };
+    clone.filters = [...this.filters];
+    return clone;
+  }
+
   add(objectArr) {
     this.union = Array.isArray(objectArr)
       ? addArray(this.union, objectArr, this.options)
       : add(this.union, objectArr, this.options);
-    return this;
+    return this.clone(this);
   }
 
   count() {
@@ -35,7 +43,7 @@ class CountObjects {
 
   addFilter(filter) {
     this.filters = [...this.filters, filter];
-    return this;
+    return this.clone(this);
   }
 
   getFilters() {
