@@ -26,7 +26,7 @@ class CountObjects {
     this.union = Array.isArray(objectArr)
       ? addArray(this.union, objectArr, this.options)
       : add(this.union, objectArr, this.options);
-    return this.clone(this);
+    return this;
   }
 
   count() {
@@ -43,7 +43,7 @@ class CountObjects {
 
   addFilter(filter) {
     this.filters = [...this.filters, filter];
-    return this.clone(this);
+    return this;
   }
 
   getFilters() {
@@ -52,7 +52,7 @@ class CountObjects {
 
   clearFilters() {
     this.filters = [];
-    return this.clone(this);
+    return this;
   }
 
   removeFilter(filterToRemove) {
@@ -60,7 +60,7 @@ class CountObjects {
     this.filters = this.filters.filter((filter) => {
       return JSON.stringify(filter) !== filterToRemoveStr;
     });
-    return this.clone(this);
+    return this;
   }
 }
 module.exports = {

@@ -137,6 +137,29 @@ console.log(co.getFilters());
 // ]
 ```
 
+### clearFilters
+
+```javascript
+// removes all filters
+co.clearFilters();
+console.log(co.getFilters());
+// []
+```
+
+### removeFilter
+
+```javascript
+// removes a specific filter if it exists:
+co.addFilter(["a", 1]);
+co.addFilter(["b", 2]);
+co.addFilter(["c", 3]);
+console.log(co.getFilters());
+// [ [ 'a', 1 ], [ 'b', 2 ], [ 'c', 3 ] ]
+co.removeFilter(["b", 2]);
+console.log(co.getFilters());
+// [ [ 'a', 1 ], [ 'c', 3 ] ]
+```
+
 ### count unique values
 
 ```javascript
@@ -180,22 +203,9 @@ console.table(uniqueColors.table());
 ### clone
 
 ```javascript
-// creates a clone of the countObjects instance:
-const clone = co.clone();
+// creates a clone of the countObjects
+// (this can be helpful when setting a state with React)
+instance: const clone = co.clone();
 console.log(clone === co);
 // false
-```
-
-### clearFilters
-
-```javascript
-// removes all filters
-```
-
-### removeFilter
-
-```javascript
-// removes a specific filter if exists:
-const filter = ["fruit", "orange", "Valencia"];
-co.removeFilter(filter);
 ```
