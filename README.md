@@ -202,10 +202,11 @@ console.table(uniqueColors.table());
 
 ### clone
 
-```javascript
-// creates a clone of the countObjects
+````javascript
+// creates a clone of the countObjects instance
 // (this can be helpful when setting a state with React)
-instance: const clone = co.clone();
+```javascript
+const clone = co.clone();
 console.log(clone === co);
 // false
-```
+````
