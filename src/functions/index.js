@@ -4,7 +4,6 @@ const {
   prettyDelimiter,
 } = require("../constants");
 const { flatten, unflatten } = require("flat");
-const { v4: uuid } = require("uuid");
 
 const intersection = (obj1, obj2) => {
   const intersection = {};
@@ -31,7 +30,7 @@ const add = (union, obj, options = {}) => {
     return union;
   }
   if (uniqueKey === uniqueKeyName) {
-    obj[uniqueKey] = uuid();
+    obj[uniqueKey] = Math.random().toString();
   }
   if (obj[uniqueKey] === undefined) {
     return union;

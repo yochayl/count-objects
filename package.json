@@ -16,8 +16,7 @@
     "prettier": "2.2.1"
   },
   "dependencies": {
-    "flat": "^5.0.2",
-    "uuid": "^8.3.2"
+    "flat": "^5.0.2"
   },
   "keywords": [
     "javascript",

@@ -35,7 +35,6 @@ describe("add", () => {
     const id = "dummy";
     const union = add({}, { [id]: "1", a: "b" }, { uniqueKey: id });
     const union2 = add(union, { a: "b" }, { uniqueKey: id });
-    console.log(union);
     expect(union).to.be.equals(union2);
     return done();
   });
