@@ -104,12 +104,12 @@ const getUniqueKeys = (union, filter) => {
     return key.match(baseKeyRegex);
   });
   if (subKeys.length) {
-    let uniqueKeys = {};
+    const uniqueKeys = {};
     for (const subKey of subKeys) {
       const values = Object.keys(union[subKey]);
       for (const value of values) {
-        for (const kk in union[subKey][value]) {
-          uniqueKeys[kk] = union[subKey][value][kk];
+        for (const id in union[subKey][value]) {
+          uniqueKeys[id] = true;
         }
       }
     }
