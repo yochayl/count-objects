@@ -35,24 +35,23 @@ const add = (union, obj, options = {}) => {
   if (obj[uniqueKey] === undefined) {
     return union;
   }
-  const newUnion = { ...union };
   const flat = flatten(obj, { delimiter });
   const keys = Object.keys(flat);
   for (const key of keys) {
     if (key !== uniqueKey) {
       const val = flat[key] !== undefined && valueToString(flat[key]);
       if (val) {
-        if (!newUnion[key]) {
-          newUnion[key] = {};
+        if (!union[key]) {
+          union[key] = {};
         }
-        if (!newUnion[key][val]) {
-          newUnion[key][val] = {};
+        if (!union[key][val]) {
+          union[key][val] = {};
         }
-        newUnion[key][val][flat[uniqueKey]] = true;
+        union[key][val][flat[uniqueKey]] = true;
       }
     }
   }
-  return newUnion;
+  return union;
 };
 
 const flatCount = (union, options = {}) => {
@@ -109,7 +108,9 @@ const getUniqueKeys = (union, filter) => {
     for (const subKey of subKeys) {
       const values = Object.keys(union[subKey]);
       for (const value of values) {
-        uniqueKeys = { ...uniqueKeys, ...union[subKey][value] };
+        for (const kk in union[subKey][value]) {
+          uniqueKeys[kk] = union[subKey][value][kk];
+        }
       }
     }
     return uniqueKeys;
