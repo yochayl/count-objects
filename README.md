@@ -55,7 +55,6 @@ console.log((countObject);
 // the same data can be presented as a table:
 const countTable = co.table();
 console.table(countTable);
-
 // ┌─────────┬────────────────┬──────────────┬───────┐
 // │ (index) │      key       │    value     │ count │
 // ├─────────┼────────────────┼──────────────┼───────┤
@@ -69,7 +68,7 @@ console.table(countTable);
 ### add
 
 ```javascript
-// add more values to the counting object:
+// add more values:
 co.add([
   {
     fruit: {
@@ -78,7 +77,6 @@ co.add([
     },
   },
 ]);
-
 console.table(co.table());
 // ┌─────────┬────────────────┬──────────────┬───────┐
 // │ (index) │      key       │    value     │ count │
@@ -93,16 +91,15 @@ console.table(co.table());
 ### addFilter
 
 ```javascript
-// add a filter to count only objects with 'Valencia' oranges
+// add a filter to count only objects with specific value
 // the filter format is an array, like in this example:
-
-const valenciaFilter = ["fruit", "orange", "Valencia"];
-co.addFilter(valenciaFilter);
-console.table(co.table());
 
 // count only objects that have
 // key:   'fruit.orange'
 // value: 'Valencia'
+const valenciaFilter = ["fruit", "orange", "Valencia"];
+co.addFilter(valenciaFilter);
+console.table(co.table());
 // ┌─────────┬────────────────┬──────────────┬───────┐
 // │ (index) │      key       │    value     │ count │
 // ├─────────┼────────────────┼──────────────┼───────┤
@@ -115,7 +112,6 @@ console.table(co.table());
 // add another filter, now for "Arbequina" olive:
 co.addFilter(["fruit", "olive", "Arbequina"]);
 console.table(co.table());
-
 // ┌─────────┬────────────────┬──────────────┬───────┐
 // │ (index) │      key       │    value     │ count │
 // ├─────────┼────────────────┼──────────────┼───────┤
@@ -186,7 +182,6 @@ const flowers = [
 
 const uniqueColors = new CountObjects(flowers, { uniqueKey: "color" });
 console.table(uniqueColors.table());
-
 // ┌─────────┬────────┬─────────┬───────┐
 // │ (index) │  key   │  value  │ count │
 // ├─────────┼────────┼─────────┼───────┤
