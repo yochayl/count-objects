@@ -2,6 +2,10 @@
 
 Counts objects for each value
 
+## demo
+
+[Earthquakes API](https://yochayl.github.io/count-objects-demo/)
+
 ## install
 
 ```console
