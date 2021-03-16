@@ -31,13 +31,13 @@ class CountObjects {
 
   count() {
     return count(this.union, {
-      filter: intersectFilters(this.union, this.filters),
+      filter: intersectFilters(this.union, this.filters).intersection,
     });
   }
 
   table() {
     return table(this.union, {
-      filter: intersectFilters(this.union, this.filters),
+      filter: intersectFilters(this.union, this.filters).intersection,
     });
   }
 
@@ -61,6 +61,10 @@ class CountObjects {
       return JSON.stringify(filter) !== filterToRemoveStr;
     });
     return this;
+  }
+
+  filtersCount() {
+    return intersectFilters(this.union, this.filters).countIntersections;
   }
 }
 module.exports = {

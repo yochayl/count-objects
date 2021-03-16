@@ -118,24 +118,42 @@ const getUniqueKeys = (union, filter) => {
   throw new Error("illegal filter");
 };
 
-const intersectFilters = (union, filters) => {
+const countPerFilter = (union, filters) => {
   if (!filters.length) {
     return null;
+  }
+  console.log(union);
+  const uniqueKeys = filters.map((filter) => {
+    return getUniqueKeys(union, filter);
+  });
+  console.log(uniqueKeys);
+  return uniqueKeys.map((obj) => Object.keys(obj).length);
+};
+
+const intersectFilters = (union, filters) => {
+  if (!filters.length) {
+    return { intersection: null, countIntersections: null };
   }
   const uniqueKeys = filters.map((filter) => {
     return getUniqueKeys(union, filter);
   });
   // intersection of all the sets from left ot right
-  return uniqueKeys.reduce((acc, curr) => {
+  const intersectionArr = [uniqueKeys[0]];
+  const intersection = uniqueKeys.reduce((acc, curr) => {
     const keys = Object.keys(acc);
-    const intersection = {};
+    const intersect = {};
     for (const key of keys) {
       if (curr[key] !== undefined) {
-        intersection[key] = true;
+        intersect[key] = true;
       }
     }
-    return intersection;
+    intersectionArr.push(intersect);
+    return intersect;
   });
+  const countIntersections = intersectionArr.map(
+    (obj) => Object.keys(obj).length
+  );
+  return { intersection, countIntersections };
 };
 
 const table = (union, options = {}) => {

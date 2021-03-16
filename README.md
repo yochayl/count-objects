@@ -160,6 +160,37 @@ console.log(co.getFilters());
 // [ [ 'a', 1 ], [ 'c', 3 ] ]
 ```
 
+### filtersCount
+
+```javascript
+// returns how many objects were counted after implementing each filter:
+const objects = [
+  { a: 1, b: 2 },
+  { a: 1, b: 2, c: 3 },
+  { a: 1, b: 2, c: 3, d: 4 },
+  { a: 1, b: 2, c: 3, d: 4, e: 5 },
+  { a: 1 },
+];
+const co = new CountObjects(objects);
+co.addFilter(["a", "1"]); // 5 objects
+co.addFilter(["b", "2"]); // 4 objects
+co.addFilter(["c", "3"]); // 3 objects
+co.addFilter(["d", "4"]); // 2 objects
+co.addFilter(["e", "5"]); // 1 object
+console.log(co.filtersCount());
+// [ 5, 4, 3, 2, 1 ]
+
+co.clearFilters();
+co.addFilter(["b", "2"]); // 4 objects
+co.addFilter(["d", "4"]); // 2 objects
+co.addFilter(["c", "3"]); // 2 objects
+co.addFilter(["e", "5"]); // 1 object
+co.addFilter(["a", "1"]); // 1 object
+console.log(co.filtersCount());
+/// [ 4, 2, 2, 1, 1 ]
+```
+
+
 ### count unique values
 
 ```javascript

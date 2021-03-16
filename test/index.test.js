@@ -1,6 +1,4 @@
 const { expect } = require("chai");
-const { users } = require("./data");
-const { flatten, unflatten } = require("flat");
 
 const {
   flatCount,
@@ -461,8 +459,9 @@ describe("intersectFilters", () => {
         false: { u1: true },
       },
     };
-    const uniqueKeys = intersectFilters(union, []);
-    expect(uniqueKeys).to.be.null;
+    const { intersection, countIntersections } = intersectFilters(union, []);
+    expect(intersection).to.be.null;
+    expect(countIntersections).to.be.null;
     return done();
   });
 
@@ -484,8 +483,12 @@ describe("intersectFilters", () => {
       u3: true,
     };
 
-    const uniqueKeys = intersectFilters(union, filters);
-    expect(uniqueKeys).to.be.eql(expectedResult);
+    const { intersection, countIntersections } = intersectFilters(
+      union,
+      filters
+    );
+    expect(intersection).to.be.eql(expectedResult);
+    expect(countIntersections).to.be.eql([3]);
 
     return done();
   });
@@ -511,12 +514,44 @@ describe("intersectFilters", () => {
       u5: true,
     };
 
-    const uniqueKeys = intersectFilters(union, filters);
-    expect(uniqueKeys).to.be.eql(expectedResult);
+    const { intersection, countIntersections } = intersectFilters(
+      union,
+      filters
+    );
+    expect(intersection).to.be.eql(expectedResult);
+    expect(countIntersections).to.be.eql([5, 3]);
 
     return done();
   });
+
+  it("intersects multiple filters", (done) => {
+    const objects = [
+      { index: 0, a: 1 },
+      { index: 1, a: 1, b: 2 },
+      { index: 2, a: 1, b: 2, c: 3 },
+      { index: 3, a: 1, b: 2, c: 3, d: 4 },
+      { index: 4, a: 1, b: 2, c: 3, d: 4, e: 5 },
+    ];
+    const union = addArray({}, objects, { uniqueKey: "index" });
+    const filters = [
+      ["a", "1"],
+      ["b", "2"],
+      ["c", "3"],
+      ["d", "4"],
+      ["e", "5"],
+    ];
+
+    const { intersection, countIntersections } = intersectFilters(
+      union,
+      filters
+    );
+
+    expect(intersection).to.be.eql({ 4: true });
+    expect(countIntersections).to.be.eql([5, 4, 3, 2, 1]);
+    return done();
+  });
 });
+
 describe("CountObjects", () => {
   describe("add", () => {
     it("adds a single object", (done) => {
