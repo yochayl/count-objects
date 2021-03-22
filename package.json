@@ -1,6 +1,6 @@
 {
   "name": "count-objects",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Counts objects for each value",
   "main": "src/index.js",
   "scripts": {
