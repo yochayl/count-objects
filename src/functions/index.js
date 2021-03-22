@@ -118,19 +118,7 @@ const getUniqueKeys = (union, filter) => {
   throw new Error("illegal filter");
 };
 
-const countPerFilter = (union, filters) => {
-  if (!filters.length) {
-    return null;
-  }
-  console.log(union);
-  const uniqueKeys = filters.map((filter) => {
-    return getUniqueKeys(union, filter);
-  });
-  console.log(uniqueKeys);
-  return uniqueKeys.map((obj) => Object.keys(obj).length);
-};
-
-const intersectFilters = (union, filters) => {
+const intersectFilters = (union, filters, options) => {
   if (!filters.length) {
     return { intersection: null, countIntersections: null };
   }
