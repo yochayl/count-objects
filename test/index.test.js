@@ -8,9 +8,11 @@ const {
   addArray,
   table,
   intersectFilters,
+  safeGetValue,
 } = require("../src/functions/index");
 const { delimiter, prettyDelimiter } = require("../src/constants");
 const { CountObjects } = require("../src");
+const flatten = require("flat");
 
 describe("add", () => {
   it("returns union for empty object", (done) => {
@@ -113,6 +115,38 @@ describe("add", () => {
   });
 });
 
+describe("safeGetValue", () => {
+  it("finds the correct value", (done) => {
+    const obj = { a: { b: { c: { d: "e" } } } };
+    const keyArr = ["a", "b", "c", "d"];
+    const value = safeGetValue(obj, keyArr);
+    expect(value).to.be.equals("e");
+    return done();
+  });
+  it("returns undefined for missing value", (done) => {
+    const obj = { a: { b: { c: { d: "e" } } } };
+    const keyArr = ["a", "b", "e", "d"];
+    const value = safeGetValue(obj, keyArr);
+    expect(value).to.be.undefined;
+    return done();
+  });
+  it("returns undefined if the value is an object", (done) => {
+    const obj = { a: { b: { c: { d: "e" } } } };
+    const keyArr = ["a", "b", "c"];
+    const value = safeGetValue(obj, keyArr);
+    expect(value).to.be.undefined;
+    return done();
+  });
+
+  it("returns a string", (done) => {
+    const obj = { a: { b: { c: { d: 0 } } } };
+    const keyArr = ["a", "b", "c", "d"];
+    const value = safeGetValue(obj, keyArr);
+    expect(value).to.be.equals("0");
+    return done();
+  });
+});
+
 describe("flatCount", () => {
   it("counts every value", (done) => {
     const union = {
@@ -125,16 +159,30 @@ describe("flatCount", () => {
       [`kt${delimiter}k6`]: { twoIds: { 0: true, 1: true } },
       [`a.b${delimiter}.c.d`]: { ".": { 1: true } },
     };
-    const expectedResult = {
-      k1: { v1: 1, v2: 1 },
-      [`kt${delimiter}k3`]: { false: 1, true: 1 },
-      [`kt${delimiter}k4`]: { 0: 2 },
-      [`kt${delimiter}k5${delimiter}0`]: { a: 1 },
-      [`kt${delimiter}k5${delimiter}1`]: { b: 1 },
-      [`kt${delimiter}k5${delimiter}2${delimiter}k6`]: { d: 1 },
-      [`kt${delimiter}k6`]: { twoIds: 2 },
-      [`a.b${delimiter}.c.d`]: { ".": 1 },
-    };
+    // const expectedResult = {
+    //   k1: { v1: 1, v2: 1 },
+    //   [`kt${delimiter}k3`]: { false: 1, true: 1 },
+    //   [`kt${delimiter}k4`]: { 0: 2 },
+    //   [`kt${delimiter}k5${delimiter}0`]: { a: 1 },
+    //   [`kt${delimiter}k5${delimiter}1`]: { b: 1 },
+    //   [`kt${delimiter}k5${delimiter}2${delimiter}k6`]: { d: 1 },
+    //   [`kt${delimiter}k6`]: { twoIds: 2 },
+    //   [`a.b${delimiter}.c.d`]: { ".": 1 },
+    // };
+
+    const expectedResult = flatten(
+      {
+        k1: { v1: 1, v2: 1 },
+        [`kt${delimiter}k3`]: { false: 1, true: 1 },
+        [`kt${delimiter}k4`]: { 0: 2 },
+        [`kt${delimiter}k5${delimiter}0`]: { a: 1 },
+        [`kt${delimiter}k5${delimiter}1`]: { b: 1 },
+        [`kt${delimiter}k5${delimiter}2${delimiter}k6`]: { d: 1 },
+        [`kt${delimiter}k6`]: { twoIds: 2 },
+        [`a.b${delimiter}.c.d`]: { ".": 1 },
+      },
+      { delimiter }
+    );
 
     const result = flatCount(union);
     expect(result).to.be.eql(expectedResult);
@@ -152,16 +200,19 @@ describe("flatCount", () => {
       [`a.b${delimiter}.c.d`]: { ".": { 1: true } },
     };
     const filter = { 1: true };
-    const expectedResult = {
-      k1: { v1: 0, v2: 1 },
-      [`kt${delimiter}k3`]: { false: 0, true: 1 },
-      [`kt${delimiter}k4`]: { 0: 1 },
-      [`kt${delimiter}k5${delimiter}0`]: { a: 0 },
-      [`kt${delimiter}k5${delimiter}1`]: { b: 0 },
-      [`kt${delimiter}k5${delimiter}2${delimiter}k6`]: { d: 0 },
-      [`kt${delimiter}k6`]: { twoIds: 1 },
-      [`a.b${delimiter}.c.d`]: { ".": 1 },
-    };
+    const expectedResult = flatten(
+      {
+        k1: { v1: 0, v2: 1 },
+        [`kt${delimiter}k3`]: { false: 0, true: 1 },
+        [`kt${delimiter}k4`]: { 0: 1 },
+        [`kt${delimiter}k5${delimiter}0`]: { a: 0 },
+        [`kt${delimiter}k5${delimiter}1`]: { b: 0 },
+        [`kt${delimiter}k5${delimiter}2${delimiter}k6`]: { d: 0 },
+        [`kt${delimiter}k6`]: { twoIds: 1 },
+        [`a.b${delimiter}.c.d`]: { ".": 1 },
+      },
+      { delimiter }
+    );
     const result = flatCount(union, { filter });
     expect(result).to.be.eql(expectedResult);
 
@@ -437,7 +488,8 @@ describe("table", () => {
       { key: `key${prettyDelimiter}A`, value: "2", count: 2 },
       { key: `key${prettyDelimiter}B`, value: "1", count: 1 },
     ];
-    const result = table(union)
+    const flatUnion = flatCount(union);
+    const result = table([flatUnion])
       .sort((a, b) => {
         const test = a.value < b.value ? -1 : 1;
         return a.value === b.value ? 0 : test;
@@ -583,6 +635,93 @@ describe("CountObjects", () => {
         { key: "key1", value: "value2", count: 1 },
       ];
       const table = co.table();
+      expect(table).to.be.eql(expectedResult);
+      return done();
+    });
+
+    it("generates a table with counting unique keys", (done) => {
+      const flowers = [
+        {
+          flowers: {
+            color: "black",
+            type: "Tulip",
+            height: 12,
+          },
+        },
+        {
+          flowers: {
+            color: "black",
+            type: "Tulip",
+            height: 10,
+          },
+        },
+        {
+          flowers: {
+            color: "white",
+            type: "Tulip",
+            height: 10,
+          },
+        },
+        {
+          flowers: {
+            type: "Tulip",
+            height: 13,
+          },
+        },
+      ];
+
+      const co = new CountObjects(flowers, {
+        uniqueKeys: [
+          ["flowers", "color"],
+          ["flowers", "height"],
+        ],
+      });
+
+      const table = co.table();
+      const expectedResult = [
+        {
+          key: "flowers.color",
+          value: "black",
+          count: 2,
+          "unique-key-1": 1,
+          "unique-key-2": 2,
+        },
+        {
+          key: "flowers.color",
+          value: "white",
+          count: 1,
+          "unique-key-1": 1,
+          "unique-key-2": 1,
+        },
+        {
+          key: "flowers.type",
+          value: "Tulip",
+          count: 4,
+          "unique-key-1": 2,
+          "unique-key-2": 3,
+        },
+        {
+          key: "flowers.height",
+          value: "10",
+          count: 2,
+          "unique-key-1": 2,
+          "unique-key-2": 1,
+        },
+        {
+          key: "flowers.height",
+          value: "12",
+          count: 1,
+          "unique-key-1": 1,
+          "unique-key-2": 1,
+        },
+        {
+          key: "flowers.height",
+          value: "13",
+          count: 1,
+          "unique-key-1": 0,
+          "unique-key-2": 1,
+        },
+      ];
       expect(table).to.be.eql(expectedResult);
       return done();
     });

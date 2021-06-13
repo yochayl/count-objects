@@ -23,15 +23,37 @@ const valueToString = (value) => {
   return value.toString();
 };
 
+const safeGetValue = (object, keyArr) => {
+  if (!Array.isArray(keyArr) || !keyArr.length) {
+    throw "keyArr is not valid";
+  }
+  let innerObj = object;
+  for (const key of keyArr) {
+    if (typeof innerObj === "object") {
+      innerObj = innerObj[key];
+    }
+  }
+  if (innerObj !== undefined && typeof innerObj !== "object") {
+    return innerObj.toString();
+  } else {
+    return undefined;
+  }
+};
+
 const add = (union, obj, options = {}) => {
-  const { uniqueKey = uniqueKeyName } = options || {};
+  const { uniqueKey = uniqueKeyName, uniqueKeyArr } = options || {};
 
   if (!Object.keys(obj).length) {
     return union;
   }
-  if (uniqueKey === uniqueKeyName) {
+
+  if (uniqueKeyArr) {
+    const value = safeGetValue(obj, uniqueKeyArr);
+    obj[uniqueKey] = value;
+  } else if (uniqueKey === uniqueKeyName) {
     obj[uniqueKey] = Math.random().toString();
   }
+
   if (obj[uniqueKey] === undefined) {
     return union;
   }
@@ -60,13 +82,13 @@ const flatCount = (union, options = {}) => {
   const countUnion = {};
   for (const key of keys) {
     const values = Object.keys(union[key]);
-    countUnion[key] = {};
     for (const value of values) {
+      const keyVal = `${key}${delimiter}${value}`;
       const uniqueKeysObj = union[key][value];
       const intersect = filter
         ? intersection(filter, uniqueKeysObj)
         : uniqueKeysObj;
-      countUnion[key][value] = Object.keys(intersect).length;
+      countUnion[keyVal] = Object.keys(intersect).length;
     }
   }
   return countUnion;
@@ -80,8 +102,7 @@ const addArray = (union = {}, objArr = [{}], options = {}) => {
   if (!Array.isArray(objArr)) {
     throw new Error("objArr is not an array");
   }
-  const flats = objArr.map((obj) => flatten(obj, { delimiter }));
-  return flats.reduce((acc, curr) => {
+  return objArr.reduce((acc, curr) => {
     return add(acc, curr, options);
   }, union);
 };
@@ -144,21 +165,23 @@ const intersectFilters = (union, filters, options) => {
   return { intersection, countIntersections };
 };
 
-const table = (union, options = {}) => {
+const table = (flatCountArr, options = {}) => {
   const { pDelimiter = prettyDelimiter } = options;
-  const countResult = flatCount(union, options);
   const tableObj = [];
-  const keys = Object.keys(countResult);
+  // the first object in the array is the count of all objects
+  const keys = Object.keys(flatCountArr[0]);
   for (const key of keys) {
-    const prettyKey = key.split(delimiter).join(pDelimiter);
-    const values = Object.keys(countResult[key]);
-    for (const value of values) {
-      const count = countResult[key][value];
-      tableObj.push({ key: prettyKey, value: value, count });
-    }
+    const keyValArr = key.split(delimiter);
+    const value = keyValArr.pop();
+    const prettyKey = keyValArr.join(pDelimiter);
+    const count = flatCountArr[0][key];
+    const counts = flatCountArr.reduce((acc, flatCount, idx) => {
+      const countName = idx ? `unique-key-${idx}` : "count";
+      acc[countName] = flatCount[key] || 0;
+      return acc;
+    }, {});
+    tableObj.push({ key: prettyKey, value: value, ...counts });
   }
-
-  // first sort by value then by key
   return tableObj;
 };
 
@@ -170,4 +193,5 @@ module.exports = {
   count,
   table,
   intersectFilters,
+  safeGetValue,
 };

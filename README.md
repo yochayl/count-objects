@@ -190,44 +190,59 @@ console.log(co.filtersCount());
 /// [ 4, 2, 2, 1, 1 ]
 ```
 
-
 ### count unique values
 
 ```javascript
-// instead of counting unique objects, we can count unique values.
-// in this example we count unique colors:
+// in this example we count also unique color (unique-key-1) and unique height (unique-key-1):
 
 const flowers = [
   {
-    color: "black",
-    type: "Tulip",
+    flowers: {
+      color: "black",
+      type: "Tulip",
+      height: 12,
+    },
   },
   {
-    color: "black",
-    type: "Tulip",
+    flowers: {
+      color: "black",
+      type: "Tulip",
+      height: 10,
+    },
   },
   {
-    color: "white",
-    type: "Tulip",
+    flowers: {
+      color: "white",
+      type: "Tulip",
+      height: 10,
+    },
   },
   {
-    type: "Tulip",
+    flowers: {
+      type: "Tulip",
+      height: 13,
+    },
   },
 ];
 
-const uniqueColors = new CountObjects(flowers, { uniqueKey: "color" });
-console.table(uniqueColors.table());
-// ┌─────────┬────────┬─────────┬───────┐
-// │ (index) │  key   │  value  │ count │
-// ├─────────┼────────┼─────────┼───────┤
-// │    0    │ 'type' │ 'Tulip' │   2   │
-// └─────────┴────────┴─────────┴───────┘
+const countUniqueValues = new CountObjects(flowers, {
+  uniqueKeys: [
+    ["flowers", "color"], // the key to the unique value is given in an array format
+    ["flowers", "height"],
+  ],
+});
 
-// about the unique key ('uniqueKey'):
-// 1. it needs to be at the base of the object (not nested)
-// 2. it is omitted from the count
-// 3. if it is missing, the values in the object are not counted
-// 4. it can only be set once, at the constructor
+console.table(countUniqueValues.table());
+// ┌─────────┬──────────────────┬─────────┬───────┬──────────────┬──────────────┐
+// │ (index) │       key        │  value  │ count │ unique-key-1 │ unique-key-2 │
+// ├─────────┼──────────────────┼─────────┼───────┼──────────────┼──────────────┤
+// │    0    │ 'flowers.color'  │ 'black' │   2   │      1       │      2       │
+// │    1    │ 'flowers.color'  │ 'white' │   1   │      1       │      1       │
+// │    2    │ 'flowers.type'   │ 'Tulip' │   4   │      2       │      3       │
+// │    3    │ 'flowers.height' │  '10'   │   2   │      2       │      1       │
+// │    4    │ 'flowers.height' │  '12'   │   1   │      1       │      1       │
+// │    5    │ 'flowers.height' │  '13'   │   1   │      0       │      1       │
+// └─────────┴──────────────────┴─────────┴───────┴──────────────┴──────────────┘
 ```
 
 ### clone

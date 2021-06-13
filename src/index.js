@@ -5,40 +5,65 @@ const {
   count,
   table,
   intersectFilters,
+  flatCount,
 } = require("./functions");
 
 class CountObjects {
   constructor(objectArr, options) {
-    this.union = addArray({}, objectArr, { ...options });
+    this.unions = [];
+    const { uniqueKeys } = options || { uniqueKeys: [] };
+    if (!Array.isArray(uniqueKeys)) {
+      throw new Error("uniqueKeys is not an array");
+    }
+    this.uniqueKeys = [undefined, ...uniqueKeys];
+    for (const uniqueKeyArr of this.uniqueKeys) {
+      this.unions.push(addArray({}, objectArr, { uniqueKeyArr }));
+    }
     this.options = { ...options };
     this.filters = [];
   }
 
   clone() {
     const clone = new CountObjects([]);
-    clone.union = { ...this.union };
+    clone.unions = [...this.unions];
     clone.options = { ...this.options };
     clone.filters = [...this.filters];
+    clone.uniqueKeys = [...this.uniqueKeys];
     return clone;
   }
 
   add(objectArr) {
-    this.union = Array.isArray(objectArr)
-      ? addArray(this.union, objectArr, this.options)
-      : add(this.union, objectArr, this.options);
+    for (const idx in this.unions) {
+      this.unions[idx] = Array.isArray(objectArr)
+        ? addArray(this.unions[idx], objectArr, this.uniqueKeys[idx])
+        : add(this.unions[idx], objectArr, this.options[idx]);
+    }
     return this;
   }
 
   count() {
-    return count(this.union, {
-      filter: intersectFilters(this.union, this.filters).intersection,
+    const counts = this.unions.map((union) => {
+      return count(union, {
+        ...this.options,
+        filter: intersectFilters(union, this.filters).intersection,
+      });
     });
+    if (counts.length === 1) {
+      return counts[0];
+    } else {
+      return counts;
+    }
   }
 
   table() {
-    return table(this.union, {
-      filter: intersectFilters(this.union, this.filters).intersection,
+    const flatCountArr = this.unions.map((union) => {
+      return flatCount(union, {
+        ...this.options,
+        filter: intersectFilters(union, this.filters).intersection,
+      });
     });
+
+    return table(flatCountArr, this.options);
   }
 
   addFilter(filter) {
@@ -64,7 +89,14 @@ class CountObjects {
   }
 
   filtersCount() {
-    return intersectFilters(this.union, this.filters).countIntersections;
+    const filterCount = this.unions.map((union) => {
+      return intersectFilters(union, this.filters).countIntersections;
+    });
+    if (filterCount.length === 1) {
+      return filterCount[0];
+    } else {
+      return filterCount;
+    }
   }
 }
 module.exports = {
