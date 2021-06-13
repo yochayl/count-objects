@@ -193,7 +193,8 @@ console.log(co.filtersCount());
 ### count unique values
 
 ```javascript
-// in this example we count also unique color (unique-key-1) and unique height (unique-key-1):
+// in this example we count also unique color (unique-key-1)
+// and unique height (unique-key-2):
 
 const flowers = [
   {
