@@ -43,7 +43,7 @@ const co = new CountObjects(objects);
 ```javascript
 //  the count result in an object format:
 const countObject = co.count();
-console.log((countObject);
+console.log(countObject);
 // {
 //   fruit: {
 //     olive: { Arbequina: 1, Kalamata: 1 },
